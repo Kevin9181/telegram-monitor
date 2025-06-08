@@ -39,15 +39,47 @@
 3. 按提示设置机器人名称和用户名
 4. 记录机器人的 `token`
 
-### 3. 一键安装
+### 3. 安装方式
+
+#### 方式一：本地安装
 
 ```bash
 # 克隆仓库
 git clone https://github.com/Kevin9181/telegram-monitor.git
 cd telegram-monitor
 
+# 设置执行权限
+chmod +x install.sh scripts/*.sh
+
 # 运行安装脚本
 sudo bash install.sh
+```
+
+#### 方式二：SSH远程安装
+
+通过SSH连接远程服务器进行安装：
+
+```bash
+# 下载SSH安装脚本
+wget https://raw.githubusercontent.com/Kevin9181/telegram-monitor/main/ssh_install.sh
+
+# 使用SSH密钥认证
+bash ssh_install.sh -h <服务器IP> -u <用户名> -k <私钥路径>
+
+# 使用密码认证
+bash ssh_install.sh -h <服务器IP> -u <用户名> -p
+
+# 指定SSH端口
+bash ssh_install.sh -h <服务器IP> -u <用户名> -k <私钥路径> -P 2222
+```
+
+#### 方式三：一键在线安装
+
+直接从网络运行安装脚本：
+
+```bash
+# SSH自动安装（推荐）
+curl -sSL https://raw.githubusercontent.com/Kevin9181/telegram-monitor/main/ssh_auto_install.sh | bash -s -- -h <服务器IP> -u <用户名> -k <私钥路径>
 ```
 
 安装过程中会提示您输入：
@@ -137,6 +169,100 @@ git pull
 
 # 运行更新脚本
 sudo bash scripts/update.sh
+```
+
+## 🚀 SSH远程安装详解
+
+### SSH安装优势
+
+- ✅ 无需登录远程服务器
+- ✅ 自动检测系统类型
+- ✅ 一键完成所有配置
+- ✅ 支持密钥和密码认证
+- ✅ 自动启动系统服务
+
+### SSH安装步骤
+
+#### 1. 准备SSH连接信息
+
+确保你有以下信息：
+- 服务器IP地址或域名
+- SSH用户名（建议使用root或有sudo权限的用户）
+- SSH私钥文件路径 或 准备输入密码
+
+#### 2. 运行SSH安装脚本
+
+**使用SSH密钥（推荐）：**
+```bash
+# 下载并运行
+curl -sSL https://raw.githubusercontent.com/Kevin9181/telegram-monitor/main/ssh_auto_install.sh | bash -s -- -h 192.168.1.100 -u root -k ~/.ssh/id_rsa
+
+# 或者分步执行
+wget https://raw.githubusercontent.com/Kevin9181/telegram-monitor/main/ssh_install.sh
+bash ssh_install.sh -h 192.168.1.100 -u root -k ~/.ssh/id_rsa
+```
+
+**使用密码认证：**
+```bash
+bash ssh_install.sh -h 192.168.1.100 -u root -p
+```
+
+**自定义SSH端口：**
+```bash
+bash ssh_install.sh -h example.com -u ubuntu -k ~/.ssh/id_rsa -P 2222
+```
+
+#### 3. 配置过程
+
+脚本会自动：
+1. 测试SSH连接
+2. 检查系统类型和权限
+3. 安装系统依赖（git, python3等）
+4. 下载项目代码
+5. 引导你配置Telegram API信息
+6. 自动完成安装和启动服务
+
+#### 4. 配置信息
+
+安装过程中需要提供：
+- **Telegram API ID** - 从 https://my.telegram.org/apps 获取
+- **Telegram API Hash** - 从同一页面获取
+- **Bot Token** - 从 @BotFather 获取
+- **管理员用户ID** - 使用 @userinfobot 获取
+- **监控关键词** - 空格分隔，如：重要 通知 紧急
+- **监控群组** - 空格分隔，如：channelname -1001234567890
+- **转发目标** - 空格分隔的用户ID或群组ID
+
+### SSH安装示例
+
+```bash
+# 完整示例
+curl -sSL https://raw.githubusercontent.com/Kevin9181/telegram-monitor/main/ssh_auto_install.sh | bash -s -- -h 192.168.1.100 -u root -k ~/.ssh/id_rsa
+
+# 按提示输入配置信息
+Telegram API ID: 12345678
+Telegram API Hash: abcdef1234567890abcdef1234567890
+Bot Token: 1234567890:ABCdefGHIjklMNOpqrsTUVwxyz
+管理员用户ID: 123456789
+监控关键词(空格分隔): 重要 通知 紧急 警告
+监控群组/频道(空格分隔): techchannel -1001234567890
+转发目标ID(空格分隔): 123456789 -1009876543210
+```
+
+### 安装后管理
+
+```bash
+# 查看服务状态
+ssh root@192.168.1.100 'systemctl status channel_forwarder'
+
+# 查看实时日志
+ssh root@192.168.1.100 'journalctl -u channel_forwarder -f'
+
+# 重启服务
+ssh root@192.168.1.100 'systemctl restart channel_forwarder bot_manager'
+
+# 停止服务
+ssh root@192.168.1.100 'systemctl stop channel_forwarder bot_manager'
 ```
 
 ## 📂 项目结构

@@ -95,64 +95,81 @@ systemctl enable channel_forwarder.service
 systemctl enable bot_manager.service
 
 # 配置部分
-echo ""
-echo -e "${GREEN}现在进行配置${NC}"
-echo ""
+if [ "$SKIP_CONFIG" != "1" ]; then
+    echo ""
+    echo -e "${GREEN}现在进行配置${NC}"
+    echo ""
 
-# 检查是否已有配置文件
-if [ -f "$WORK_DIR/config/config.json" ]; then
-    echo -e "${YELLOW}检测到已存在配置文件${NC}"
-    read -p "是否要重新配置？(y/n): " reconfigure
-    if [ "$reconfigure" != "y" ]; then
-        echo -e "${GREEN}使用现有配置${NC}"
+    # 检查是否已有配置文件
+    if [ -f "$WORK_DIR/config/config.json" ]; then
+        echo -e "${YELLOW}检测到已存在配置文件${NC}"
+        read -p "是否要重新配置？(y/n): " reconfigure
+        if [ "$reconfigure" != "y" ]; then
+            echo -e "${GREEN}使用现有配置${NC}"
+        else
+            mv $WORK_DIR/config/config.json $WORK_DIR/config/config.json.bak.$(date +%Y%m%d_%H%M%S)
+            bash $SCRIPT_DIR/scripts/configure.sh
+        fi
     else
-        mv $WORK_DIR/config/config.json $WORK_DIR/config/config.json.bak.$(date +%Y%m%d_%H%M%S)
         bash $SCRIPT_DIR/scripts/configure.sh
     fi
 else
-    bash $SCRIPT_DIR/scripts/configure.sh
+    echo -e "${YELLOW}跳过交互式配置（使用现有配置文件）${NC}"
 fi
 
 # 登录
-echo ""
-echo -e "${GREEN}现在进行Telegram账号登录...${NC}"
-echo -e "${YELLOW}请按照提示完成 Telegram 登录认证${NC}"
-echo ""
+if [ "$SKIP_CONFIG" != "1" ]; then
+    echo ""
+    echo -e "${GREEN}现在进行Telegram账号登录...${NC}"
+    echo -e "${YELLOW}请按照提示完成 Telegram 登录认证${NC}"
+    echo ""
 
-cd $WORK_DIR
-./start_login_helper.sh
+    cd $WORK_DIR
+    ./start_login_helper.sh
 
-# 询问是否登录成功
-echo ""
-while true; do
-    read -p "登录是否成功？(y/n): " yn
-    case $yn in
-        [Yy]* ) 
-            echo -e "${GREEN}开始启动系统服务...${NC}"
-            
-            # 启动服务
-            systemctl start channel_forwarder
-            sleep 2
-            systemctl start bot_manager
-            sleep 2
-            
-            # 检查服务状态
-            echo ""
-            echo -e "${GREEN}服务状态:${NC}"
-            systemctl --no-pager status channel_forwarder | head -n 5
-            echo ""
-            systemctl --no-pager status bot_manager | head -n 5
-            
-            break
-            ;;
-        [Nn]* ) 
-            echo -e "${RED}请手动运行登录助手:${NC}"
-            echo -e "${BLUE}cd ${WORK_DIR} && ./start_login_helper.sh${NC}"
-            break
-            ;;
-        * ) echo "请输入 y 或 n";;
-    esac
-done
+    # 询问是否登录成功
+    echo ""
+    while true; do
+        read -p "登录是否成功？(y/n): " yn
+        case $yn in
+            [Yy]* ) 
+                echo -e "${GREEN}开始启动系统服务...${NC}"
+                
+                # 启动服务
+                systemctl start channel_forwarder
+                sleep 2
+                systemctl start bot_manager
+                sleep 2
+                
+                # 检查服务状态
+                echo ""
+                echo -e "${GREEN}服务状态:${NC}"
+                systemctl --no-pager status channel_forwarder | head -n 5
+                echo ""
+                systemctl --no-pager status bot_manager | head -n 5
+                
+                break
+                ;;
+            [Nn]* ) 
+                echo -e "${RED}请手动运行登录助手:${NC}"
+                echo -e "${BLUE}cd ${WORK_DIR} && ./start_login_helper.sh${NC}"
+                break
+                ;;
+            * ) echo "请输入 y 或 n";;
+        esac
+    done
+else
+    echo -e "${YELLOW}自动模式：跳过登录，直接启动服务${NC}"
+    cd $WORK_DIR
+    
+    # 直接启动服务
+    systemctl start channel_forwarder
+    sleep 2
+    systemctl start bot_manager
+    sleep 2
+    
+    echo -e "${GREEN}服务已启动${NC}"
+fi
 
 echo ""
 echo -e "${GREEN}✅ 安装完成！${NC}"
