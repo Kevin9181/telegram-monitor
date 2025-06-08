@@ -43,7 +43,7 @@
 
 ```bash
 # 克隆仓库
-git clone https://github.com/yourusername/telegram-monitor.git
+git clone https://github.com/Kevin9181/telegram-monitor.git
 cd telegram-monitor
 
 # 运行安装脚本
@@ -201,4 +201,4 @@ telegram-monitor/
 
 ---
 
-如有问题或建议，请提交 [Issue](https://github.com/yourusername/telegram-monitor/issues) 
+如有问题或建议，请提交 [Issue](https://github.com/Kevin9181/telegram-monitor/issues) 
