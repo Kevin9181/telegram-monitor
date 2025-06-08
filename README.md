@@ -78,7 +78,17 @@ bash ssh_install.sh -h <服务器IP> -u <用户名> -k <私钥路径> -P 2222
 直接从网络运行安装脚本：
 
 ```bash
-# SSH自动安装（推荐）
+# 快速安装（推荐 - 修复版）
+export TG_API_ID='你的API_ID'
+export TG_API_HASH='你的API_Hash'
+export TG_BOT_TOKEN='你的Bot_Token'
+export TG_ADMIN_ID='你的用户ID'
+export TG_KEYWORDS='重要 通知 紧急'
+export TG_WATCH_IDS='channelname -1001234567890'
+export TG_TARGET_IDS='123456789 -1009876543210'
+curl -sSL https://raw.githubusercontent.com/Kevin9181/telegram-monitor/main/quick_install_fixed.sh | bash
+
+# 或者SSH自动安装
 curl -sSL https://raw.githubusercontent.com/Kevin9181/telegram-monitor/main/ssh_auto_install.sh | bash -s -- -h <服务器IP> -u <用户名> -k <私钥路径>
 ```
 
@@ -311,6 +321,69 @@ telegram-monitor/
    - 公开群组/频道的链接任何人都可以访问
    - 私有群组的链接仅群组成员可以访问
 4. **配置备份**：建议定期备份 `config/config.json` 文件
+
+## 🛠️ 故障排除
+
+### 常见问题
+
+#### 1. 无限循环错误 "API ID 不能为空且必须是数字"
+
+**问题**: 在SSH或非交互式环境中运行时出现无限循环
+
+**解决方案**: 使用修复版安装脚本
+```bash
+# 方法1: 使用环境变量配置
+export TG_API_ID='你的API_ID'
+export TG_API_HASH='你的API_Hash'
+export TG_BOT_TOKEN='你的Bot_Token'
+export TG_ADMIN_ID='你的用户ID'
+export TG_WATCH_IDS='channelname -1001234567890'
+export TG_TARGET_IDS='123456789 -1009876543210'
+curl -sSL https://raw.githubusercontent.com/Kevin9181/telegram-monitor/main/quick_install_fixed.sh | bash
+
+# 方法2: 手动配置
+cd /tmp/telegram-monitor
+cp config/config.example.json config/config.json
+# 编辑配置文件后运行
+SKIP_CONFIG=1 sudo bash install.sh
+```
+
+#### 2. SSH连接失败
+
+**问题**: SSH连接被拒绝或超时
+
+**解决方案**: 
+- 检查服务器IP和端口
+- 验证SSH密钥或密码
+- 确保服务器允许SSH连接
+
+#### 3. Python依赖安装失败
+
+**问题**: pip安装失败
+
+**解决方案**:
+```bash
+# Ubuntu/Debian
+sudo apt update && sudo apt install -y python3-pip python3-venv python3-full
+
+# 使用--break-system-packages参数
+pip3 install --break-system-packages telethon python-telegram-bot
+```
+
+#### 4. 服务启动失败
+
+**问题**: systemctl服务无法启动
+
+**解决方案**:
+```bash
+# 检查日志
+journalctl -u channel_forwarder -n 50
+journalctl -u bot_manager -n 50
+
+# 手动测试
+cd /opt/telegram-monitor
+./start_forwarder.sh
+```
 
 ## 🤝 贡献
 
