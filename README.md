@@ -433,7 +433,7 @@ cd /opt/telegram-monitor
 本项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情
 
 ## 🙏 致谢
-
+朦胧大佬
 - [Telethon](https://github.com/LonamiWebs/Telethon) - Telegram 客户端库
 - [python-telegram-bot](https://github.com/python-telegram-bot/python-telegram-bot) - Telegram Bot API 库
 
