@@ -92,6 +92,26 @@ curl -sSL https://raw.githubusercontent.com/Kevin9181/telegram-monitor/main/quic
 curl -sSL https://raw.githubusercontent.com/Kevin9181/telegram-monitor/main/ssh_auto_install.sh | bash -s -- -h <服务器IP> -u <用户名> -k <私钥路径>
 ```
 
+#### 方式四：增强版安装脚本（🔗 消息源定位功能）
+
+使用带有消息源定位功能的增强版安装脚本：
+
+```bash
+# 下载增强版安装脚本
+curl -sSL https://raw.githubusercontent.com/Kevin9181/telegram-monitor/main/telegram_monitor_installer_enhanced.sh -o telegram_installer.sh
+
+# 设置执行权限并运行
+chmod +x telegram_installer.sh
+sudo bash telegram_installer.sh
+```
+
+**增强版特性：**
+- 🔗 自动生成消息直达超链接
+- 📍 支持公开频道和私人群组的精确定位
+- 🎯 一键跳转到原始消息位置，无需手动爬楼
+- 📋 完整的消息来源信息显示
+- ⚡ 集成完整的安装和配置流程
+
 安装过程中会提示您输入：
 - Telegram API ID
 - Telegram API Hash
@@ -282,6 +302,7 @@ telegram-monitor/
 ├── README.md              # 项目说明文档
 ├── LICENSE               # MIT 开源协议
 ├── install.sh            # 一键安装脚本
+├── telegram_monitor_installer_enhanced.sh  # 增强版安装脚本（带消息源定位）
 ├── .gitignore           # Git 忽略文件
 ├── requirements.txt      # Python 依赖
 ├── src/                 # 源代码目录
