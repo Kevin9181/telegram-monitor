@@ -112,6 +112,24 @@ sudo bash telegram_installer.sh
 - 📋 完整的消息来源信息显示
 - ⚡ 集成完整的安装和配置流程
 
+#### 方式五：一键SSH安装指令（🚀 最简单）
+
+直接在服务器终端运行一条命令完成所有安装：
+
+```bash
+apt update && apt install -y python3-pip && \
+wget https://raw.githubusercontent.com/Kevin9181/telegram-monitor/main/telegram_monitor_installer_enhanced.sh -O install.sh && \
+chmod +x install.sh && \
+pip3 install --break-system-packages telethon python-telegram-bot && \
+./install.sh
+```
+
+**适用场景：**
+- ✅ 新服务器快速部署
+- ✅ 一键完成所有步骤
+- ✅ 自动安装系统依赖
+- ✅ 包含增强版消息定位功能
+
 安装过程中会提示您输入：
 - Telegram API ID
 - Telegram API Hash
